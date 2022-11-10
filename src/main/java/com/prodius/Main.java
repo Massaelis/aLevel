@@ -5,11 +5,12 @@ import com.prodius.CarService.CarService;
 
 public class Main {
     public static void main(String[] args) {
-        Car car1 = CarService.create();
-        Car car2 = CarService.create();
-        Car car3 = CarService.create();
-        CarService.print(car1);
-        CarService.print(car2);
-        CarService.print(car3);
+        CarService carService = new CarService();
+        Car car1 = carService.create();
+        Car car2 = carService.create();
+        Car car3 = carService.create();
+        carService.print(car1);
+        carService.print(car2);
+        carService.print(car3);
     }
 }
