@@ -1,29 +1,15 @@
 package com.prodius;
 
+import com.prodius.Car.Car;
+import com.prodius.CarService.CarService;
+
 public class Main {
     public static void main(String[] args) {
-        String name = "Prodius Oleh";
-        System.out.println(name);
-
-        System.out.println();
-
-        int i = 0;
-        int y = 5;
-        do {
-            System.out.println("Крок " + i + ", значення " + y);
-            i++;
-            y += 2;
-        } while (i <= 10);
-
-        System.out.println();
-
-        for (i = 0; i <= 10; i++) {
-            if (i == 3)
-                continue;
-            if (i == 6)
-                break;
-            System.out.println("Крок " + i);
-        }
+        Car car1 = CarService.create();
+        Car car2 = CarService.create();
+        Car car3 = CarService.create();
+        CarService.print(car1);
+        CarService.print(car2);
+        CarService.print(car3);
     }
 }
-
