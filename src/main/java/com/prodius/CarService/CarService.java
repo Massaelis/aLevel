@@ -5,7 +5,7 @@ import com.prodius.Car.Car;
 import java.util.Random;
 
 public class CarService {
-    private static String randomString(){
+    private String randomString(){
         String symbols = "abcdefghijklmnopqrstuvwxyz";
         Random random = new Random();
         StringBuilder sb = new StringBuilder();
@@ -16,7 +16,7 @@ public class CarService {
         return sb.toString();
     }
 
-    public static Car create() {
+    public Car create() {
         String manufacturer = randomString();
         String engine = randomString();
         String color = randomString();
@@ -24,7 +24,7 @@ public class CarService {
         return car;
     }
 
-    public static void print(Car car){
+    public void print(Car car){
         System.out.println("Manufacturer: " + car.getManufacturer() + " Engine: " + car.getEngine() + " Color: " +
                 car.getColor() +" Count: " + car.getCount() + " Price: " + car.getPrice());
     }
