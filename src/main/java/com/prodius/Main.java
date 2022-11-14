@@ -12,5 +12,9 @@ public class Main {
         carService.print(car1);
         carService.print(car2);
         carService.print(car3);
+
+        carService.check(car1);
+        carService.check(car2);
+        carService.check(car3);
     }
 }
