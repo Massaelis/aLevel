@@ -1,7 +1,7 @@
 package com.prodius.repository;
 
-import com.prodius.Car.Car;
-import com.prodius.Car.Color;
+import com.prodius.car.Car;
+import com.prodius.model.Color;
 
 public class CarArrayRepository {
     private static Car[] cars = new Car[10];

@@ -1,4 +1,4 @@
-package com.prodius.Car;
+package com.prodius.model;
 
 public enum Color {
     WHITE,
