@@ -1,16 +1,18 @@
 package com.prodius.car;
 
 import com.prodius.model.Color;
+import com.prodius.model.CountRestore;
 import com.prodius.model.Engine;
 
 import com.prodius.model.Type;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
 import java.util.UUID;
 @Getter
 @Setter
-public abstract class Car {
+public abstract class Car implements CountRestore{
     private String manufacturer;
     private Engine engine;
     private Color color;
@@ -30,5 +32,16 @@ public abstract class Car {
         this.price = (int) (Math.random() * 9001 + 1000);
         this.id = UUID.randomUUID().toString();
         this.type = type;
+    }
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Car car = (Car) o;
+        return Objects.equals(getId(), car.getId());
+    }
+    @Override
+    public int hashCode() {
+        return Objects.hash(getManufacturer(),getColor());
     }
 }

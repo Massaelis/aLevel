@@ -153,5 +153,16 @@ class CarServiceTest {
     void printAll() {
         Assertions.assertDoesNotThrow(() -> target.printAll());
     }
-
+    @Test
+    void carEquals_with_null_car() {
+        final boolean expected = false;
+        boolean realValue = target.carEquals(car, null);
+        Assertions.assertEquals(expected, realValue);
+    }
+    @Test
+    void carEquals_with_same_car() {
+        final boolean expected = true;
+        boolean realValue = target.carEquals(car, car);
+        Assertions.assertEquals(expected, realValue);
+    }
 }
