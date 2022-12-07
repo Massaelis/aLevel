@@ -1,8 +1,11 @@
-package com.prodius.CarService;
+package com.prodius.carService;
 
-import com.prodius.Car.Car;
-import com.prodius.Car.Color;
+import com.prodius.car.Car;
+import com.prodius.model.Color;
 import com.prodius.model.Engine;
+import com.prodius.model.PassengerCar;
+import com.prodius.model.Truck;
+import com.prodius.model.Type;
 import com.prodius.repository.CarArrayRepository;
 import com.prodius.util.RandomGenerator;
 
@@ -11,11 +14,40 @@ import java.util.Random;
 public class CarService {
     private final Random random = new Random();
 
-    public Car create() {
-        Car car = new Car(randomString(), getRandomEngine(), getRandomColor());
+    public PassengerCar create() {
+        PassengerCar car = new PassengerCar(randomString(), getRandomEngine(), getRandomColor(), Type.CAR);
         carArrayRepository.save(car);
         return car;
     }
+    public PassengerCar createPassengerCar() {
+        PassengerCar passengerCar = new PassengerCar(randomString(), getRandomEngine(), getRandomColor(), Type.CAR);
+        carArrayRepository.save(passengerCar);
+        return passengerCar;
+    }
+    public Truck createTruck() {
+        final Truck truck = new Truck(randomString(), getRandomEngine(), getRandomColor(), Type.TRUCK);
+        carArrayRepository.save(truck);
+        return truck;
+    }
+    public void printPassengerCar(PassengerCar passengerCar) {
+        if (passengerCar == null) {
+            return;
+        }
+        System.out.println("id: " + passengerCar.getId() + "; Type car: " + passengerCar.getType() +"; Manufacturer: "
+                + passengerCar.getManufacturer() + "; Engine: " + passengerCar.getEngine() + "; Color: "
+                + passengerCar.getColor() + "; Count: " + passengerCar.getCount() + "; PassengerCount: "
+                + passengerCar.getPassengerCount());
+    }
+    public void printTruck(Truck truck) {
+        if (truck == null) {
+            return;
+        }
+        System.out.println("id: " + truck.getId() + "; Type car: " + truck.getType() +"; Manufacturer: "
+                + truck.getManufacturer() + "; Engine: " + truck.getEngine() + "; Color: "
+                + truck.getColor() + "; Count: " + truck.getCount() + "; LoadCapacity: "
+                + truck.getLoadCapacity());
+    }
+
     public int create(final int count) {
         if (count <= 0) {
             return -1;
@@ -44,8 +76,9 @@ public class CarService {
         return new Engine(type[random.nextInt(type.length)], random.nextInt(0, 1001));
     }
     public void print(Car car) {
-        System.out.println("id: " + car.getId() +"; Manufacturer: " + car.getManufacturer() + "; Engine: " + car.getEngine() + "; Color: " +
-                car.getColor() + "; Count: " + car.getCount() + "; Price: " + car.getPrice());
+        System.out.println("id: " + car.getId() +"; Type car: " + car.getType() +"; Manufacturer: "
+                + car.getManufacturer() + "; Engine: " + car.getEngine() + "; Color: " + car.getColor() + "; Count: "
+                + car.getCount() + "; Price: " + car.getPrice());
     }
     public static void check(Car car) {
         if (car == null) {

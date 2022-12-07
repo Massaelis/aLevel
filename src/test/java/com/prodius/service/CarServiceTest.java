@@ -1,7 +1,8 @@
 package com.prodius.service;
 
-import com.prodius.Car.Car;
-import com.prodius.CarService.CarService;
+import com.prodius.car.Car;
+import com.prodius.carService.CarService;
+import com.prodius.model.PassengerCar;
 import com.prodius.repository.CarArrayRepository;
 import com.prodius.util.RandomGenerator;
 import org.junit.jupiter.api.Assertions;
@@ -13,13 +14,13 @@ class CarServiceTest {
     private CarService target;
     private CarArrayRepository repository;
     private RandomGenerator randomGenerator;
-    private Car car;
+    private PassengerCar car;;
     @BeforeEach
     void setUp() {
         repository = Mockito.mock(CarArrayRepository.class);
         target = new CarService(repository);
         randomGenerator = Mockito.mock(RandomGenerator.class);
-        car = new Car();
+        car = new PassengerCar();
     }
 
     @Test
@@ -87,7 +88,7 @@ class CarServiceTest {
 
     @Test
     void getAll_not_null() {
-        final Car[] cars = {new Car(), new Car()};
+        final Car[] cars = {new PassengerCar(), new PassengerCar()};
         Mockito.when(repository.getAll()).thenReturn(cars);
         Assertions.assertNotNull(target.getAll());
     }
@@ -152,4 +153,5 @@ class CarServiceTest {
     void printAll() {
         Assertions.assertDoesNotThrow(() -> target.printAll());
     }
+
 }

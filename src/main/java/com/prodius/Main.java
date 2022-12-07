@@ -1,21 +1,18 @@
 package com.prodius;
 
-import com.prodius.Car.Car;
-import com.prodius.CarService.CarService;
+import com.prodius.car.Car;
+import com.prodius.carService.CarService;
 import com.prodius.repository.CarArrayRepository;
 
 public class Main {
     public static void main(String[] args) {
         CarService carService = new CarService(new CarArrayRepository());
-        Car car1 = carService.create();
-        Car car2 = carService.create();
-        Car car3 = carService.create();
-        carService.print(car1);
-        carService.print(car2);
-        carService.print(car3);
+        Car car = carService.create();
+        carService.print(car);
+        carService.check(car);
 
-        carService.check(car1);
-        carService.check(car2);
-        carService.check(car3);
+        carService.printPassengerCar(carService.createPassengerCar());
+
+        carService.printTruck(carService.createTruck());
     }
 }
