@@ -29,6 +29,39 @@ public class CarService {
         carArrayRepository.save(truck);
         return truck;
     }
+    public Car createCar(final Type type) {
+        Car car = null;
+        if (type == Type.CAR) {
+            car = new PassengerCar(randomString(), getRandomEngine(), getRandomColor(), RandomGenerator.getRandomType());
+            ((PassengerCar)car).setPassengerCount(RandomGenerator.getRandomNumber());
+        } else if (type == Type.TRUCK) {
+            car = new Truck(randomString(), getRandomEngine(), getRandomColor(), RandomGenerator.getRandomType());
+            ((Truck)car).setLoadCapacity(RandomGenerator.getRandomNumber());
+        }
+        carArrayRepository.save(car);
+        return car;
+    }
+    public void printCar(Car car) {
+        if (car == null) {
+            return;
+        }
+        System.out.print("id: " + car.getId() + "; Type car: " + car.getType() +"; Manufacturer: "
+                + car.getManufacturer() + "; Engine: " + car.getEngine() + "; Color: "
+                + car.getColor() +"; Count: " + car.getCount() + "; Price: " + car.getPrice());
+        if(car.getType() == Type.CAR){
+            System.out.println("; PassengerCount " + ((PassengerCar)car).getPassengerCount());
+        } else {
+            System.out.println("; LoadCapacity: " + ((Truck)car).getLoadCapacity());
+        }
+        System.out.println();
+    }
+    public boolean carEquals(Car car1, Car car2) {
+        if (car1 == null || car2 == null) return false;
+        if (car1 == car2) return true;
+        if (car2.getType() != car1.getType()) return false;
+        if (car1.hashCode() != car2.hashCode()) return false;
+        return car1.equals(car2);
+    }
     public void printPassengerCar(PassengerCar passengerCar) {
         if (passengerCar == null) {
             return;

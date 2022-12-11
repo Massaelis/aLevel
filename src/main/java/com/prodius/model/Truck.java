@@ -8,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 
-public class Truck extends Car implements CountRestore {
+public class Truck extends Car{
     private int loadCapacity;
     public Truck(){
     }
