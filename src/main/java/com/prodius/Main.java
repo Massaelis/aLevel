@@ -8,6 +8,7 @@ import com.prodius.util.RandomGenerator;
 public class Main {
     public static void main(String[] args) {
         CarService carService = new CarService(new CarArrayRepository());
+        Car carA = carService.createCar(RandomGenerator.getRandomType());
         Car car = carService.create();
         carService.print(car);
         carService.check(car);
@@ -21,5 +22,11 @@ public class Main {
         Car car2 = carService.createCar(RandomGenerator.getRandomType());
         carService.printCar(car2);
         System.out.println(carService.carEquals(car1, car2));
+
+        carService.printManufacturerAndCount(carA);
+        carService.printColor(carA);
+        carService.checkCount(carA);
+        carService.printEngineInfo(carA);
+        carService.printInfo(carA);
     }
 }
