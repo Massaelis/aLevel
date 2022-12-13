@@ -1,6 +1,7 @@
 package com.prodius.carService;
 
 import com.prodius.car.Car;
+import com.prodius.exeption.UserInputException;
 import com.prodius.model.Color;
 import com.prodius.model.Engine;
 import com.prodius.model.PassengerCar;
@@ -9,7 +10,10 @@ import com.prodius.model.Type;
 import com.prodius.repository.CarArrayRepository;
 import com.prodius.util.RandomGenerator;
 
+import java.util.Optional;
 import java.util.Random;
+
+import static com.prodius.util.RandomGenerator.getRandomType;
 
 public class CarService {
     private final Random random = new Random();
@@ -30,15 +34,16 @@ public class CarService {
         return truck;
     }
     public Car createCar(final Type type) {
-        Car car = null;
+        Car car;
         if (type == Type.CAR) {
-            car = new PassengerCar(randomString(), getRandomEngine(), getRandomColor(), RandomGenerator.getRandomType());
+            car = new PassengerCar(randomString(), getRandomEngine(), getRandomColor(), getRandomType());
             ((PassengerCar)car).setPassengerCount(RandomGenerator.getRandomNumber());
         } else if (type == Type.TRUCK) {
-            car = new Truck(randomString(), getRandomEngine(), getRandomColor(), RandomGenerator.getRandomType());
+            car = new Truck(randomString(), getRandomEngine(), getRandomColor(), getRandomType());
             ((Truck)car).setLoadCapacity(RandomGenerator.getRandomNumber());
+        } else {
+            car = null;
         }
-        carArrayRepository.save(car);
         return car;
     }
     public void printCar(Car car) {
@@ -56,10 +61,18 @@ public class CarService {
         System.out.println();
     }
     public boolean carEquals(Car car1, Car car2) {
-        if (car1 == null || car2 == null) return false;
-        if (car1 == car2) return true;
-        if (car2.getType() != car1.getType()) return false;
-        if (car1.hashCode() != car2.hashCode()) return false;
+        if (car1 == null || car2 == null){
+            return false;
+        }
+        if (car1 == car2){
+            return true;
+        }
+        if (car2.getType() != car1.getType()){
+            return false;
+        }
+        if (car1.hashCode() != car2.hashCode()){
+            return false;
+        }
         return car1.equals(car2);
     }
     public void printPassengerCar(PassengerCar passengerCar) {
@@ -112,6 +125,32 @@ public class CarService {
         System.out.println("id: " + car.getId() +"; Type car: " + car.getType() +"; Manufacturer: "
                 + car.getManufacturer() + "; Engine: " + car.getEngine() + "; Color: " + car.getColor() + "; Count: "
                 + car.getCount() + "; Price: " + car.getPrice());
+    }
+    public void printManufacturerAndCount(final Car car) {
+        final Optional<Car> optionalCar = Optional.ofNullable(car);
+        optionalCar.ifPresent(manufacturerAndCount -> System.out.println("Manufacturer and Count: "
+                + car.getManufacturer() + ", " + car.getCount()));
+    }
+    public void printColor(final Car car) {
+        final Optional<Car> optionalCar = Optional.ofNullable(car);
+        System.out.println("Color: " + optionalCar.orElse(createCar(Type.CAR)).getColor());
+    }
+    public void checkCount(final Car car) {
+        final Optional<Car> optionalCar = Optional.ofNullable(car);
+        Car carA = optionalCar.filter(x -> x.getCount() > 10).orElseThrow(() ->
+                new UserInputException("Count: 10 or less"));
+        System.out.println("Manufacturer and Count: " + carA.getManufacturer() + ", " + carA.getCount());
+    }
+    public void printEngineInfo(final Car car) {
+        final Optional<Car> optionalCar = Optional.ofNullable(car);
+        Car carA = optionalCar.orElseGet(()->{
+            System.out.println("Create car");
+            return createCar(Type.CAR);
+        });
+        optionalCar.map(Car::getEngine).ifPresent(power -> System.out.println("Engine: " + carA.getEngine()));
+    }
+    public void printInfo(final Car car){
+        Optional.ofNullable(car).ifPresentOrElse(print -> printCar(car), () -> printCar(createCar(Type.CAR)));
     }
     public static void check(Car car) {
         if (car == null) {

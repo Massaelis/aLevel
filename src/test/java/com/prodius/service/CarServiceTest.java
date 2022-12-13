@@ -165,4 +165,28 @@ class CarServiceTest {
         boolean realValue = target.carEquals(car, car);
         Assertions.assertEquals(expected, realValue);
     }
+    @Test
+    void printManufacturerAndCount_null() {
+        Assertions.assertDoesNotThrow(() -> target.printManufacturerAndCount(null));
+    }
+    @Test
+    void printManufacturerAndCount_positive() {
+        Assertions.assertDoesNotThrow(() -> target.printManufacturerAndCount(car));
+    }
+    @Test
+    void printColor_null() {
+        Assertions.assertDoesNotThrow(() -> target.printColor(null));
+    }
+    @Test
+    void printColor_positive() {
+        Assertions.assertDoesNotThrow(() -> target.printColor(car));
+    }
+    @Test
+    void printEngineInfo_null() {
+        Assertions.assertDoesNotThrow(() -> target.printEngineInfo(null));
+    }
+    @Test
+    void printEngineInfo_positive() {
+        Assertions.assertDoesNotThrow(() -> target.printEngineInfo(car));
+    }
 }
