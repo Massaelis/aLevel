@@ -16,6 +16,7 @@ import java.util.Random;
 import static com.prodius.util.RandomGenerator.getRandomType;
 
 public class CarService {
+    private static CarService carService;
     private final Random random = new Random();
 
     public PassengerCar create() {
@@ -127,27 +128,23 @@ public class CarService {
                 + car.getCount() + "; Price: " + car.getPrice());
     }
     public void printManufacturerAndCount(final Car car) {
-        final Optional<Car> optionalCar = Optional.ofNullable(car);
-        optionalCar.ifPresent(manufacturerAndCount -> System.out.println("Manufacturer and Count: "
+        Optional.ofNullable(car).ifPresent(manufacturerAndCount -> System.out.println("Manufacturer and Count: "
                 + car.getManufacturer() + ", " + car.getCount()));
     }
     public void printColor(final Car car) {
-        final Optional<Car> optionalCar = Optional.ofNullable(car);
-        System.out.println("Color: " + optionalCar.orElse(createCar(Type.CAR)).getColor());
+        System.out.println("Color: " + Optional.ofNullable(car).orElse(createCar(Type.CAR)).getColor());
     }
     public void checkCount(final Car car) {
-        final Optional<Car> optionalCar = Optional.ofNullable(car);
-        Car carA = optionalCar.filter(x -> x.getCount() > 10).orElseThrow(() ->
+        Car carA = Optional.ofNullable(car).filter(x -> x.getCount() > 10).orElseThrow(() ->
                 new UserInputException("Count: 10 or less"));
         System.out.println("Manufacturer and Count: " + carA.getManufacturer() + ", " + carA.getCount());
     }
     public void printEngineInfo(final Car car) {
-        final Optional<Car> optionalCar = Optional.ofNullable(car);
-        Car carA = optionalCar.orElseGet(()->{
+        Car carA = Optional.ofNullable(car).orElseGet(()->{
             System.out.println("Create car");
             return createCar(Type.CAR);
         });
-        optionalCar.map(Car::getEngine).ifPresent(power -> System.out.println("Engine: " + carA.getEngine()));
+        Optional.ofNullable(car).map(Car::getEngine).ifPresent(power -> System.out.println("Engine: " + carA.getEngine()));
     }
     public void printInfo(final Car car){
         Optional.ofNullable(car).ifPresentOrElse(print -> printCar(car), () -> printCar(createCar(Type.CAR)));
@@ -205,5 +202,11 @@ public class CarService {
     }
     public void insertCar(final int index, final Car car) {
         carArrayRepository.insert(index, car);
+    }
+    public static CarService getInstance() {
+        if (carService == null) {
+            return new CarService(CarArrayRepository.getInstance());
+        }
+        return carService;
     }
 }

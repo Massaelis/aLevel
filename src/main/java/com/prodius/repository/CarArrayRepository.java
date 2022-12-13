@@ -1,9 +1,11 @@
 package com.prodius.repository;
 
 import com.prodius.car.Car;
+import com.prodius.carService.CarService;
 import com.prodius.model.Color;
 
 public class CarArrayRepository {
+    private static CarArrayRepository carArrayRepository;
     private static Car[] cars = new Car[10];
 
     public void save(final Car car){
@@ -84,6 +86,13 @@ public class CarArrayRepository {
         Car[] newCar = new Car[cars.length * 2];
         System.arraycopy(cars, 0, newCar, 0, cars.length);
         cars = newCar;
+    }
+    public static CarArrayRepository getInstance() {
+        cars = new Car[10];
+        if (carArrayRepository == null) {
+            return new CarArrayRepository();
+        }
+        return carArrayRepository;
     }
 }
 
