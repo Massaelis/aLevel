@@ -4,7 +4,7 @@ import com.prodius.car.Car;
 import com.prodius.carService.CarService;
 import com.prodius.model.Color;
 
-public class CarArrayRepository {
+public class CarArrayRepository implements Repository<Car> {
     private static CarArrayRepository carArrayRepository;
     private static Car[] cars = new Car[10];
 
