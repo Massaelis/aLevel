@@ -2,6 +2,8 @@ package com.prodius;
 
 import com.prodius.car.Car;
 import com.prodius.carService.CarService;
+import com.prodius.container.GenericContainer;
+import com.prodius.model.Type;
 import com.prodius.repository.CarArrayRepository;
 import com.prodius.util.AlgorithmUtil;
 import com.prodius.util.RandomGenerator;
@@ -39,5 +41,12 @@ public class Main {
         System.out.println(Arrays.toString(sortedCars));
         int index = AlgorithmUtil.binarySearch(sortedCars, sortedCars[1], 0, sortedCars.length);
         System.out.println(sortedCars[index]);
+
+        GenericContainer<Car> genericContainer = new GenericContainer<>(carService.createCar(Type.CAR));
+        genericContainer.print();
+        genericContainer.increaseCount();
+        genericContainer.print();
+        genericContainer.increaseCount(15);
+        genericContainer.print();
     }
 }
