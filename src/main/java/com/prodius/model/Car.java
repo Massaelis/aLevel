@@ -1,10 +1,5 @@
-package com.prodius.car;
+package com.prodius.model;
 
-import com.prodius.model.Color;
-import com.prodius.model.CountRestore;
-import com.prodius.model.Engine;
-
-import com.prodius.model.Type;
 import lombok.Getter;
 import lombok.Setter;
 

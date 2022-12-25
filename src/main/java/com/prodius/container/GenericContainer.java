@@ -1,6 +1,6 @@
 package com.prodius.container;
 
-import com.prodius.car.Car;
+import com.prodius.model.Car;
 import com.prodius.carService.CarService;
 
 import java.util.Random;

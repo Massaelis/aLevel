@@ -1,6 +1,6 @@
 package com.prodius.service;
 
-import com.prodius.car.Car;
+import com.prodius.model.Car;
 import com.prodius.carService.CarService;
 import com.prodius.model.PassengerCar;
 import com.prodius.repository.CarArrayRepository;

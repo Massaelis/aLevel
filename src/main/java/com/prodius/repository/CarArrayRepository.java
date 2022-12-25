@@ -1,7 +1,6 @@
 package com.prodius.repository;
 
-import com.prodius.car.Car;
-import com.prodius.carService.CarService;
+import com.prodius.model.Car;
 import com.prodius.model.Color;
 
 public class CarArrayRepository implements Repository<Car> {

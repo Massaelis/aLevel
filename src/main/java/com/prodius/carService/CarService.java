@@ -1,6 +1,6 @@
 package com.prodius.carService;
 
-import com.prodius.car.Car;
+import com.prodius.model.Car;
 import com.prodius.exeption.UserInputException;
 import com.prodius.model.Color;
 import com.prodius.model.Engine;
@@ -10,8 +10,12 @@ import com.prodius.model.Type;
 import com.prodius.repository.CarArrayRepository;
 import com.prodius.util.RandomGenerator;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static com.prodius.util.RandomGenerator.getRandomType;
 
@@ -208,5 +212,15 @@ public class CarService {
             return new CarService(CarArrayRepository.getInstance());
         }
         return carService;
+    }
+    public Map<String, Integer> MapManufactureCount(List<Car> cars) {
+        return cars.stream().collect(Collectors.toMap(Car::getManufacturer, Car::getCount));
+    }
+    public Map<Integer, Car> MapEnginePower(List<Car> cars) {
+        return cars.stream().collect(Collectors.toMap(car -> car.getEngine().getPower(), car -> car));
+    }
+    public Map<Engine.TypeEngine, List<Car>> MapEngineType(List<Car> cars) {
+        return cars.stream().collect(Collectors.toMap(car -> car.getEngine().getType(), List::of,
+                (a, b) -> Stream.concat(a.stream(), b.stream()).collect(Collectors.toList())));
     }
 }

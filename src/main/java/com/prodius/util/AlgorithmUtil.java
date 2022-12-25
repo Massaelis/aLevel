@@ -1,6 +1,6 @@
 package com.prodius.util;
 
-import com.prodius.car.Car;
+import com.prodius.model.Car;
 
 import java.util.HashMap;
 import java.util.Map;

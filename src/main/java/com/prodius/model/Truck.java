@@ -1,6 +1,5 @@
 package com.prodius.model;
 
-import com.prodius.car.Car;
 import com.prodius.util.RandomGenerator;
 import lombok.Getter;
 import lombok.Setter;
