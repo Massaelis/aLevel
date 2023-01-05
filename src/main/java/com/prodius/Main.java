@@ -4,15 +4,13 @@ import com.prodius.container.CarComparator;
 import com.prodius.container.CarTree;
 import com.prodius.model.Car;
 import com.prodius.carService.CarService;
-import com.prodius.container.CarList;
+import com.prodius.model.Color;
 import com.prodius.model.Engine;
 import com.prodius.model.Type;
 import com.prodius.repository.CarArrayRepository;
 import com.prodius.util.RandomGenerator;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -82,6 +80,7 @@ public class Main {
             System.out.println(list.totalCount());
         }
          */
+        /*
         carService.create();
         List<Car> cars = Arrays.asList(carService.getAll());
         Car car2 = carService.createCar(RandomGenerator.getRandomType());
@@ -106,15 +105,40 @@ public class Main {
                 + " and " + "right count: " + carTree.getRightCount());
 
         System.out.print("Map Manufacturer: ");
-        Map<String, Integer> stringCarMap = carService.MapManufactureCount(cars);
+        Map<String, Integer> stringCarMap = carService.mapManufactureCount(cars);
         System.out.println(stringCarMap);
 
         System.out.print("Map Engine Power: ");
-        Map<Integer, Car> integerCarMap = carService.MapEnginePower(cars);
+        Map<Integer, Car> integerCarMap = carService.mapEnginePower(cars);
         System.out.println(integerCarMap);
 
         System.out.print("Map Engine  Type: ");
-        Map<Engine.TypeEngine, List<Car>> engineListMap = carService.MapEngineType(cars);
+        Map<Engine.TypeEngine, List<Car>> engineListMap = carService.mapEngineType(cars);
         System.out.println(engineListMap);
+         */
+        List<Car> cars = new LinkedList<>();
+        for (int i = 0; i < 10; i++) {
+            Car car = carService.createCar(RandomGenerator.getRandomType());
+            cars.add(car);
+        }
+        System.out.println("Manufacturer By Price more 5000: " + carService.findManufacturerByPrice(cars, 5000));
+        System.out.println("Count Sum: " + carService.countSum(cars));
+        System.out.println("Map: " + carService.mapToMap(cars));
+        System.out.println("Statistic: " + carService.statistic(cars));
+        System.out.println("Price higher 1000$: " + carService.priceCheck(cars, 1000));
+
+
+        Map<String, Object> mapConfig = new HashMap<>();
+        mapConfig.put("Type", Type.CAR);
+        mapConfig.put("Manufacturer", carService.randomString());
+        mapConfig.put("Color", Color.PURPLE);
+        mapConfig.put("Price", 2000);
+        Car newCar = carService.mapToObject(mapConfig);
+        carService.printCar( newCar);
+
+        List<List<Car>> listsCars = new ArrayList<>();
+        listsCars.add(cars);
+        Map<Color, Long> mapFiltered = carService.innerList(listsCars, 1000);
+        System.out.println(mapFiltered);
     }
 }
