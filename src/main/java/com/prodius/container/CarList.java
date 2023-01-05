@@ -1,6 +1,6 @@
 package com.prodius.container;
 
-import com.prodius.car.Car;
+import com.prodius.model.Car;
 import lombok.Getter;
 
 import java.util.Iterator;
