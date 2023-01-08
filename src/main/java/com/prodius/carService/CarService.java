@@ -9,10 +9,16 @@ import com.prodius.model.Truck;
 import com.prodius.model.Type;
 import com.prodius.repository.CarArrayRepository;
 import com.prodius.util.RandomGenerator;
+import org.apache.commons.lang3.EnumUtils;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -83,10 +89,10 @@ public class CarService {
         if (passengerCar == null) {
             return;
         }
-        System.out.println("id: " + passengerCar.getId() + "; Type car: " + passengerCar.getType() +"; Manufacturer: "
+        System.out.println(" id: " + passengerCar.getId() + "; Type car: " + passengerCar.getType() +"; Manufacturer: "
                 + passengerCar.getManufacturer() + "; Engine: " + passengerCar.getEngine() + "; Color: "
                 + passengerCar.getColor() + "; Count: " + passengerCar.getCount() + "; PassengerCount: "
-                + passengerCar.getPassengerCount());
+                + passengerCar.getPassengerCount() + "; Price: " + passengerCar.getPrice());
     }
     public void printTruck(Truck truck) {
         if (truck == null) {
@@ -280,5 +286,58 @@ public class CarService {
                 .filter(c -> c.getPrice() > price)
                 .collect(Collectors.groupingBy(Car::getColor, Collectors.counting()));
         return sortedCars;
+    }
+    public Car carResourceFile(String fileName) throws IOException {
+        String text = textFile(getResourceStream(fileName));
+        Map<String, String> map = fieldsToMap(text);
+
+        PassengerCar car = carFromMap(map);
+        return car;
+    }
+    public InputStream getResourceStream(String fileName) {
+        final InputStream resourceStream = Thread.currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream(fileName);
+        return resourceStream;
+    }
+    public String textFile(InputStream inputStream) throws IOException {
+        BufferedInputStream reader = new BufferedInputStream(inputStream);
+        String result = "";
+        int i;
+        while ((i = reader.read()) != -1){
+            result = result + (char) i;
+        }
+        inputStream.close();
+        return result;
+    }
+    public Map<String, String> fieldsToMap(String text){
+        Map<String, String> map = new HashMap<>();
+        String[] fields = text.split("\n");
+        Pattern pattern = Pattern.compile("(\\w|-)+");
+        Matcher matcher;
+        String key = null;
+        String value = null;
+        for (String s : fields) {
+            matcher = pattern.matcher(s);
+            if (matcher.find()) {
+                key = matcher.group();
+            }
+            if (matcher.find()) {
+                value = matcher.group();
+                map.put(key, value);
+            }
+        }
+        return map;
+    }
+    public PassengerCar carFromMap(Map<String, String> map){
+        PassengerCar car = new PassengerCar();
+        car.setId(map.get("id"));
+        car.setManufacturer(map.get("manufacturer"));
+        car.setEngine(new Engine(map.get("engine")));
+        car.setColor(EnumUtils.getEnum(Color.class, map.get("color")));
+        car.setCount(Integer.parseInt((map.get("count"))));
+        car.setPrice(Integer.parseInt(map.get("price")));
+        car.setPassengerCount(Integer.parseInt(map.get("passengerCount")));
+        return car;
     }
 }
