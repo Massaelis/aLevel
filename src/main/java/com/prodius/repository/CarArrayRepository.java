@@ -3,10 +3,21 @@ package com.prodius.repository;
 import com.prodius.model.Car;
 import com.prodius.model.Color;
 
-public class CarArrayRepository implements Repository<Car> {
-    private static CarArrayRepository carArrayRepository;
-    private static Car[] cars = new Car[10];
+import java.util.Optional;
 
+public class CarArrayRepository implements Repository<Car>{
+    // private static CarArrayRepository carArrayRepository;
+    private static Car[] cars = new Car[10];
+    private static CarArrayRepository instance;
+    public CarArrayRepository() {
+    }
+    public static CarArrayRepository getInstance() {
+        if (instance == null) {
+            instance = new CarArrayRepository();
+        }
+        return instance;
+    }
+    @Override
     public void save(final Car car){
         final int index = putCar(car);
         if (index == cars.length){
@@ -15,19 +26,21 @@ public class CarArrayRepository implements Repository<Car> {
             cars[oldLength] = car;
         }
     }
+    @Override
     public Car[] getAll() {
         final int newLength = foundLength();
         final Car[] newCar = new Car[newLength];
         System.arraycopy(cars, 0, newCar, 0, newLength);
         return newCar;
     }
-    public Car getById(final String id) {
+    @Override
+    public Optional<Car> getById(final String id) {
         for (Car car : cars) {
             if (car.getId().equals(id)) {
-                return car;
+                return Optional.of(car);
             }
         }
-        return null;
+        return Optional.empty();
     }
     public void delete(final String id) {
         int index = 0;
@@ -55,10 +68,7 @@ public class CarArrayRepository implements Repository<Car> {
         }
     }
     public void updateColor(final String id, final Color color) {
-        final Car car = getById(id);
-        if (car != null) {
-            car.setColor(color);
-        }
+        getById(id).ifPresent(car ->car.setColor(color));
     }
     private int foundLength() {
         int newLength = 0;
@@ -86,12 +96,4 @@ public class CarArrayRepository implements Repository<Car> {
         System.arraycopy(cars, 0, newCar, 0, cars.length);
         cars = newCar;
     }
-    public static CarArrayRepository getInstance() {
-        cars = new Car[10];
-        if (carArrayRepository == null) {
-            return new CarArrayRepository();
-        }
-        return carArrayRepository;
-    }
 }
-

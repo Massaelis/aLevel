@@ -9,11 +9,16 @@ import com.prodius.model.Truck;
 import com.prodius.model.Type;
 import com.prodius.repository.CarArrayRepository;
 import com.prodius.util.RandomGenerator;
+import org.apache.commons.lang3.EnumUtils;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -84,10 +89,10 @@ public class CarService {
         if (passengerCar == null) {
             return;
         }
-        System.out.println("id: " + passengerCar.getId() + "; Type car: " + passengerCar.getType() +"; Manufacturer: "
+        System.out.println(" id: " + passengerCar.getId() + "; Type car: " + passengerCar.getType() +"; Manufacturer: "
                 + passengerCar.getManufacturer() + "; Engine: " + passengerCar.getEngine() + "; Color: "
                 + passengerCar.getColor() + "; Count: " + passengerCar.getCount() + "; PassengerCount: "
-                + passengerCar.getPassengerCount());
+                + passengerCar.getPassengerCount() + "; Price: " + passengerCar.getPrice());
     }
     public void printTruck(Truck truck) {
         if (truck == null) {
@@ -108,7 +113,7 @@ public class CarService {
         }
         return count;
     }
-    private String randomString() {
+    public String randomString() {
         String symbols = "abcdefghijklmnopqrstuvwxyz";
         Random random = new Random();
         StringBuilder sb = new StringBuilder();
@@ -189,7 +194,7 @@ public class CarService {
             System.out.println(car);
         }
     }
-    public Car find(final String id) {
+    public Optional<Car> find(final String id) {
         if (id == null || id.isEmpty()) {
             return null;
         }
@@ -213,14 +218,126 @@ public class CarService {
         }
         return carService;
     }
-    public Map<String, Integer> MapManufactureCount(List<Car> cars) {
+    public Map<String, Integer> mapManufactureCount(List<Car> cars) {
         return cars.stream().collect(Collectors.toMap(Car::getManufacturer, Car::getCount));
     }
-    public Map<Integer, Car> MapEnginePower(List<Car> cars) {
+    public Map<Integer, Car> mapEnginePower(List<Car> cars) {
         return cars.stream().collect(Collectors.toMap(car -> car.getEngine().getPower(), car -> car));
     }
-    public Map<Engine.TypeEngine, List<Car>> MapEngineType(List<Car> cars) {
+    public Map<Engine.TypeEngine, List<Car>> mapEngineType(List<Car> cars) {
         return cars.stream().collect(Collectors.toMap(car -> car.getEngine().getType(), List::of,
                 (a, b) -> Stream.concat(a.stream(), b.stream()).collect(Collectors.toList())));
+    }
+    public List<String> findManufacturerByPrice (final List<? extends Car> cars, int price){
+        List<String> strings = cars.stream()
+                .filter(c -> c != null)
+                .filter(c -> c.getPrice() > price)
+                .map(Car::getManufacturer)
+                .collect(Collectors.toList());
+        return strings;
+    }
+    public int countSum (final List<? extends Car> cars) {
+        int sum = cars.stream()
+                .filter(c -> c != null)
+                .map(Car::getCount)
+                .reduce(0, Integer::sum);
+        return sum;
+    }
+    public Map<String, Type> mapToMap(final List<? extends Car> cars){
+        LinkedHashMap<String, Type> map = cars.stream()
+                .filter(c -> c != null)
+                .distinct()
+                .sorted(Comparator.comparing(Car::getManufacturer))
+                .collect(Collectors.toMap(Car::getId, Car::getType, (c1, c2) -> c1, LinkedHashMap::new));
+        return map;
+    }
+    public IntSummaryStatistics statistic(final List<? extends Car> cars) {
+        IntSummaryStatistics intSummaryStatistics = cars.stream()
+                .collect(Collectors.summarizingInt(Car::getPrice));
+        return intSummaryStatistics;
+    }
+    public boolean priceCheck(final List<? extends Car> cars, int price){
+        Predicate<Car> predicate = c -> c.getPrice() > price;
+        return cars.stream()
+                .filter(c -> c != null)
+                .allMatch(predicate);
+    }
+    public Car mapToObject (final Map<String, Object> config){
+        Function<Map, Car> function = map -> createCar((Type) config.get("Type"));
+        Car car = function
+                .andThen(newCar -> {
+                    newCar.setColor((Color) config.get("Color"));
+                    return newCar;
+                }).andThen(newCar -> {
+                    newCar.setPrice((int)config.get("Price"));
+                    return newCar;
+                }).andThen(newCar -> {
+                    newCar.setManufacturer((String) config.get("Manufacturer"));
+                    return newCar;
+                }).apply(config);
+        return car;
+    }
+    public Map<Color,Long> innerList(final List<List<Car>> cars, int price){
+        Map<Color, Long> sortedCars = cars.stream()
+                .flatMap(list -> list.stream())
+                .filter(c -> c != null)
+                .sorted(Comparator.comparing(Car::getColor))
+                .peek(System.out::println)
+                .filter(c -> c.getPrice() > price)
+                .collect(Collectors.groupingBy(Car::getColor, Collectors.counting()));
+        return sortedCars;
+    }
+    public Car carResourceFile(String fileName) throws IOException {
+        String text = textFile(getResourceStream(fileName));
+        Map<String, String> map = fieldsToMap(text);
+
+        PassengerCar car = carFromMap(map);
+        return car;
+    }
+    public InputStream getResourceStream(String fileName) {
+        final InputStream resourceStream = Thread.currentThread()
+                .getContextClassLoader()
+                .getResourceAsStream(fileName);
+        return resourceStream;
+    }
+    public String textFile(InputStream inputStream) throws IOException {
+        BufferedInputStream reader = new BufferedInputStream(inputStream);
+        String result = "";
+        int i;
+        while ((i = reader.read()) != -1){
+            result = result + (char) i;
+        }
+        inputStream.close();
+        return result;
+    }
+    public Map<String, String> fieldsToMap(String text){
+        Map<String, String> map = new HashMap<>();
+        String[] fields = text.split("\n");
+        Pattern pattern = Pattern.compile("(\\w|-)+");
+        Matcher matcher;
+        String key = null;
+        String value = null;
+        for (String s : fields) {
+            matcher = pattern.matcher(s);
+            if (matcher.find()) {
+                key = matcher.group();
+            }
+            if (matcher.find()) {
+                value = matcher.group();
+                map.put(key, value);
+            }
+        }
+        return map;
+    }
+    public PassengerCar carFromMap(Map<String, String> map){
+        PassengerCar car = new PassengerCar();
+        car.setId(map.get("id"));
+        car.setManufacturer(map.get("manufacturer"));
+        car.setEngine(new Engine(map.get("engine")));
+        car.setColor(EnumUtils.getEnum(Color.class, map.get("color")));
+        car.setCount(Integer.parseInt((map.get("count"))));
+        car.setPrice(Integer.parseInt(map.get("price")));
+        car.setPassengerCount(Integer.parseInt(map.get("passengerCount")));
+        return car;
     }
 }
