@@ -1,0 +1,12 @@
+{
+  "car":
+  {
+    "manufacturer": "Porsche",
+    "engine": "PETROL",
+    "color": "BLUE",
+    "count": "50",
+    "price": "10000",
+    "id": "17171zx7-c1717-1zxc-zxc7-17171zx1c717",
+    "passengerCount": "4"
+  }
+}
