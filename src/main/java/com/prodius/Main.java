@@ -2,18 +2,16 @@ package com.prodius;
 
 import com.prodius.container.CarComparator;
 import com.prodius.container.CarTree;
-import com.prodius.model.Car;
+import com.prodius.model.*;
 import com.prodius.carService.CarService;
-import com.prodius.model.Color;
-import com.prodius.model.Engine;
-import com.prodius.model.Type;
 import com.prodius.repository.CarArrayRepository;
 import com.prodius.util.RandomGenerator;
 
+import java.io.IOException;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args)throws IOException {
         CarService carService = new CarService(new CarArrayRepository());
         Car car1 = carService.createCar(RandomGenerator.getRandomType());
         /*
@@ -116,6 +114,7 @@ public class Main {
         Map<Engine.TypeEngine, List<Car>> engineListMap = carService.mapEngineType(cars);
         System.out.println(engineListMap);
          */
+        /*
         List<Car> cars = new LinkedList<>();
         for (int i = 0; i < 10; i++) {
             Car car = carService.createCar(RandomGenerator.getRandomType());
@@ -140,5 +139,14 @@ public class Main {
         listsCars.add(cars);
         Map<Color, Long> mapFiltered = carService.innerList(listsCars, 1000);
         System.out.println(mapFiltered);
+
+         */
+        Car carX = carService.carResourceFile("car.xml");
+        System.out.print(carX);
+        carService.printPassengerCar((PassengerCar) carX);
+
+        Car carC = carService.carResourceFile("car.json");
+        System.out.print(carC);
+        carService.printPassengerCar((PassengerCar) carC);
     }
 }
