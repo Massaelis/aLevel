@@ -1,5 +1,7 @@
 package com.prodius.carService;
 
+import com.prodius.anotations.Autowired;
+import com.prodius.anotations.Singleton;
 import com.prodius.model.Car;
 import com.prodius.exeption.UserInputException;
 import com.prodius.model.Color;
@@ -8,6 +10,7 @@ import com.prodius.model.PassengerCar;
 import com.prodius.model.Truck;
 import com.prodius.model.Type;
 import com.prodius.repository.CarArrayRepository;
+import com.prodius.repository.Repository;
 import com.prodius.util.RandomGenerator;
 import org.apache.commons.lang3.EnumUtils;
 
@@ -23,7 +26,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static com.prodius.util.RandomGenerator.getRandomType;
-
+@Singleton
 public class CarService {
     private static CarService carService;
     private final Random random = new Random();
@@ -172,10 +175,11 @@ public class CarService {
             System.out.println("Power and count less that need");
         }
     }
+    @Autowired(CRUDRepository = CarArrayRepository.class)
     public CarService(final CarArrayRepository carArrayRepository) {
         this.carArrayRepository = carArrayRepository;
     }
-    private final CarArrayRepository carArrayRepository;
+    private final Repository carArrayRepository;
 
     public int create(final RandomGenerator randomGenerator) {
         if (randomGenerator == null) {
@@ -201,7 +205,7 @@ public class CarService {
         return carArrayRepository.getById(id);
     }
     public Car[] getAll() {
-        return carArrayRepository.getAll();
+        return (Car[]) carArrayRepository.getAll();
     }
     public void delete(final String id) {
         if (id == null || id.isEmpty()) {
