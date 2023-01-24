@@ -1,12 +1,13 @@
 package com.prodius.repository;
 
+import com.prodius.anotations.Singleton;
 import com.prodius.model.Car;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiPredicate;
-
+@Singleton
 public class CarListRepository implements Repository<Car> {
     private static final List<Car> CARS = new LinkedList<>();
 
@@ -44,5 +45,9 @@ public class CarListRepository implements Repository<Car> {
     @Override
     public void delete(String id) {
         CARS.removeIf(carsCar -> CHECK_ID.test(carsCar, id));
+    }
+    @Override
+    public void insert(int index, Car car) {
+        CARS.add(index, car);
     }
 }

@@ -1,10 +1,11 @@
 package com.prodius.repository;
 
+import com.prodius.anotations.Singleton;
 import com.prodius.model.Car;
 import com.prodius.model.Color;
 
 import java.util.Optional;
-
+@Singleton
 public class CarArrayRepository implements Repository<Car>{
     // private static CarArrayRepository carArrayRepository;
     private static Car[] cars = new Car[10];

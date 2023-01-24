@@ -1,12 +1,13 @@
 package com.prodius.repository;
 
+import com.prodius.anotations.Singleton;
 import com.prodius.model.Car;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiPredicate;
-
+@Singleton
 public class CarMapRepository implements Repository<Car> {
     private static final Map<String, Car> CARS = new HashMap<>();
     private static CarMapRepository instance;
@@ -41,5 +42,9 @@ public class CarMapRepository implements Repository<Car> {
     @Override
     public void delete(String id) {
         CARS.remove(id);
+    }
+    @Override
+    public void insert(int index, Car car) {
+        CARS.put(car.getId(), car);
     }
 }

@@ -5,6 +5,7 @@ import com.prodius.container.CarTree;
 import com.prodius.model.*;
 import com.prodius.carService.CarService;
 import com.prodius.repository.CarArrayRepository;
+import com.prodius.util.AnnotationProcessor;
 import com.prodius.util.RandomGenerator;
 
 import java.io.IOException;
@@ -141,6 +142,7 @@ public class Main {
         System.out.println(mapFiltered);
 
          */
+        /*
         Car carX = carService.carResourceFile("car.xml");
         System.out.print(carX);
         carService.printPassengerCar((PassengerCar) carX);
@@ -148,5 +150,9 @@ public class Main {
         Car carC = carService.carResourceFile("car.json");
         System.out.print(carC);
         carService.printPassengerCar((PassengerCar) carC);
+
+         */
+        AnnotationProcessor annotationProcessor = new AnnotationProcessor();
+        annotationProcessor.processAnnotation();
     }
 }
