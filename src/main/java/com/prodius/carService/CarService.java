@@ -10,10 +10,9 @@ import com.prodius.model.Type;
 import com.prodius.repository.CarArrayRepository;
 import com.prodius.util.RandomGenerator;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -108,7 +107,7 @@ public class CarService {
         }
         return count;
     }
-    private String randomString() {
+    public String randomString() {
         String symbols = "abcdefghijklmnopqrstuvwxyz";
         Random random = new Random();
         StringBuilder sb = new StringBuilder();
@@ -213,14 +212,73 @@ public class CarService {
         }
         return carService;
     }
-    public Map<String, Integer> MapManufactureCount(List<Car> cars) {
+    public Map<String, Integer> mapManufactureCount(List<Car> cars) {
         return cars.stream().collect(Collectors.toMap(Car::getManufacturer, Car::getCount));
     }
-    public Map<Integer, Car> MapEnginePower(List<Car> cars) {
+    public Map<Integer, Car> mapEnginePower(List<Car> cars) {
         return cars.stream().collect(Collectors.toMap(car -> car.getEngine().getPower(), car -> car));
     }
-    public Map<Engine.TypeEngine, List<Car>> MapEngineType(List<Car> cars) {
+    public Map<Engine.TypeEngine, List<Car>> mapEngineType(List<Car> cars) {
         return cars.stream().collect(Collectors.toMap(car -> car.getEngine().getType(), List::of,
                 (a, b) -> Stream.concat(a.stream(), b.stream()).collect(Collectors.toList())));
+    }
+    public List<String> findManufacturerByPrice (final List<? extends Car> cars, int price){
+        List<String> strings = cars.stream()
+                .filter(c -> c != null)
+                .filter(c -> c.getPrice() > price)
+                .map(Car::getManufacturer)
+                .collect(Collectors.toList());
+        return strings;
+    }
+    public int countSum (final List<? extends Car> cars) {
+        int sum = cars.stream()
+                .filter(c -> c != null)
+                .map(Car::getCount)
+                .reduce(0, Integer::sum);
+        return sum;
+    }
+    public Map<String, Type> mapToMap(final List<? extends Car> cars){
+        LinkedHashMap<String, Type> map = cars.stream()
+                .filter(c -> c != null)
+                .distinct()
+                .sorted(Comparator.comparing(Car::getManufacturer))
+                .collect(Collectors.toMap(Car::getId, Car::getType, (c1, c2) -> c1, LinkedHashMap::new));
+        return map;
+    }
+    public IntSummaryStatistics statistic(final List<? extends Car> cars) {
+        IntSummaryStatistics intSummaryStatistics = cars.stream()
+                .collect(Collectors.summarizingInt(Car::getPrice));
+        return intSummaryStatistics;
+    }
+    public boolean priceCheck(final List<? extends Car> cars, int price){
+        Predicate<Car> predicate = c -> c.getPrice() > price;
+        return cars.stream()
+                .filter(c -> c != null)
+                .allMatch(predicate);
+    }
+    public Car mapToObject (final Map<String, Object> config){
+        Function<Map, Car> function = map -> createCar((Type) config.get("Type"));
+        Car car = function
+                .andThen(newCar -> {
+                    newCar.setColor((Color) config.get("Color"));
+                    return newCar;
+                }).andThen(newCar -> {
+                    newCar.setPrice((int)config.get("Price"));
+                    return newCar;
+                }).andThen(newCar -> {
+                    newCar.setManufacturer((String) config.get("Manufacturer"));
+                    return newCar;
+                }).apply(config);
+        return car;
+    }
+    public Map<Color,Long> innerList(final List<List<Car>> cars, int price){
+        Map<Color, Long> sortedCars = cars.stream()
+                .flatMap(list -> list.stream())
+                .filter(c -> c != null)
+                .sorted(Comparator.comparing(Car::getColor))
+                .peek(System.out::println)
+                .filter(c -> c.getPrice() > price)
+                .collect(Collectors.groupingBy(Car::getColor, Collectors.counting()));
+        return sortedCars;
     }
 }
