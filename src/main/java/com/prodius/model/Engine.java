@@ -16,9 +16,11 @@ public class Engine {
         this.power = random.nextInt(1001);
     }
     //it didn't work for me to use the old method and I created it on a new one for this hw18
+   /*
     public String toString(){
         return String.format("Type %s power %d", engine, power);
     }
+    */
 
     public TypeEngine getType(){
         return type;
@@ -34,12 +36,11 @@ public class Engine {
         this.power = power;
     }
 
-/*
+
     public String toString(){
         return String.format("Type %s power %d", type, power);
     }
 
- */
     public enum TypeEngine{
         PETROL,
         DIESEL,
